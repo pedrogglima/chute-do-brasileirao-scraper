@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/var/www/app
+      - gem_cache:/gems
+    env_file:
+      - .env/development
+
+  database:
+    image: postgres
+    env_file:
+      - .env/development
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+  gem_cache:
