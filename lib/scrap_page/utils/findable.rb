@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module ScrapPage
   module Utils
     module Findable
@@ -9,13 +10,13 @@ module ScrapPage
       def find_table_by_header(
         elems,
         compare,
-        regex = "[[:alpha:]]+",
+        regex = '[[:alpha:]]+',
         accuracy = 1.0
       )
         elems.find do |table|
           # check only single level header
-          thead = table.css("thead").first
-          return false if !thead || thead.css("tr").length > 1
+          thead = table.css('thead').first
+          return false if !thead || thead.css('tr').length > 1
 
           header = thead.text.scan(Regexp.new(regex))
 

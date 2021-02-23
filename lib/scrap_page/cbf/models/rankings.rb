@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative '../../utils/findable'
 
 module ScrapPage
@@ -56,7 +57,7 @@ module ScrapPage
 
         # @params document [Nokogiri::XML::Document]
         def initialize(document)
-          tables = document.css("table")
+          tables = document.css('table')
           @table = find_table_by_header(
             tables,
             %w[Posição PTS J V E D GP GC SG CA CV % Recentes Próx].freeze
@@ -74,7 +75,7 @@ module ScrapPage
         end
 
         # returns [] of hash<ranking>
-        def to_h 
+        def to_h
           array_rankings = []
 
           rankings.each do |ranking|
@@ -146,42 +147,40 @@ module ScrapPage
 
         def scrap_header
           # only single level header
-          thead = @table.css("thead").first
+          thead = @table.css('thead').first
           return unless thead
 
-          thead.css("tr > th").each do |th|
-            text = th.element? && th.text.gsub(/\s+/, "")
+          thead.css('tr > th').each do |th|
+            text = th.element? && th.text.gsub(/\s+/, '')
             next unless text && !text.empty?
 
             child = th.children.find { |elem| elem.element? && elem['title'] }
-            title = child["title"] if child
+            title = child['title'] if child
 
             @header << HeaderColumn.new(text, title)
           end
         end
 
         def scrap_body
-          tbody = @table.css("tbody").first
+          tbody = @table.css('tbody').first
           return unless tbody
 
-          tbody.css("tr").each do |tr|
+          tbody.css('tr').each do |tr|
             # Remove the rows that are invisible by default
-            next if tr.element? && tr['style']&.eql?("display: none")
+            next if tr.element? && tr['style']&.eql?('display: none')
 
             row = Row.new
             tr.children.each do |td|
-              text = td.element? && td.text.gsub(/\s+/, "")
+              text = td.element? && td.text.gsub(/\s+/, '')
 
               next unless text
 
               # Gets position (e.g 7º 0 Fluminense-RJ => 7º)
-              if text&.match?(/^\d{1,2}º/i)
-                text = text[/^\d{1,2}º/i].strip
-              end
+              text = text[/^\d{1,2}º/i].strip if text&.match?(/^\d{1,2}º/i)
 
               # Gets title if exist
               child = td.children.find { |elem| elem.element? && elem['title'] }
-              title = child["title"] if child
+              title = child['title'] if child
 
               # Extract team's name (e.g Santos - SP => Santos)
               if title&.match?(/^[a-záàâãéèêíïóôõöúç\s\-]+ - [a-z]{2}$/i)
@@ -194,7 +193,7 @@ module ScrapPage
             if row.cells.length == @header.length
               @rows << row
             else
-              raise "error - header length not compatible with rows size"
+              raise 'error - header length not compatible with rows size'
             end
           end
         end

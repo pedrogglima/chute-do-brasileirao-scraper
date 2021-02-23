@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module ScrapPage
   class CBF
     module Models
@@ -11,7 +12,7 @@ module ScrapPage
 
         # @params document [Nokogiri::XML::Document]
         def initialize(document)
-          @headers = document.css("h2")
+          @headers = document.css('h2')
 
           @year = nil
           @division = nil
@@ -35,7 +36,7 @@ module ScrapPage
             )
 
             self.year = h.text[/\d{4}$/i]
-            self.division = "Série A"
+            self.division = 'Série A'
           end
         end
       end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative '../../utils/findable'
 
 module ScrapPage
@@ -13,7 +14,6 @@ module ScrapPage
           attr_accessor :name,
                         :state,
                         :avatar_url
-
 
           def to_h
             {
@@ -30,7 +30,7 @@ module ScrapPage
 
         # @params document [Nokogiri::XML::Document]
         def initialize(document)
-          tables = document.css("table")
+          tables = document.css('table')
           @table = find_table_by_header(
             tables,
             %w[Posição PTS J V E D GP GC SG CA CV % Recentes Próx].freeze
@@ -38,9 +38,7 @@ module ScrapPage
 
           @teams = []
 
-          if @table
-            scrap_teams
-          end
+          scrap_teams if @table
         end
 
         # returns [] of hash<team>
@@ -54,15 +52,15 @@ module ScrapPage
         end
 
         def scrap_teams
-          tbody = @table.css("tbody").first
+          tbody = @table.css('tbody').first
           return unless tbody
 
-          tbody.css("tr").each do |tr|
+          tbody.css('tr').each do |tr|
             # Remove the rows that are invisible by default
-            next if tr.element? && tr['style']&.eql?("display: none")
+            next if tr.element? && tr['style']&.eql?('display: none')
 
             # teams are extract from <img>
-            teams = tr.css("img")
+            teams = tr.css('img')
             # Two teams found on a row
             if teams.length == 2
               # Only the first team is needed
@@ -75,17 +73,17 @@ module ScrapPage
         end
 
         def scrap_team(elem)
-          if elem&.key?("title") &&
-            elem["title"].match?(/^[a-záàâãéèêíïóôõöúç\s]+ - [a-z]{2}$/i)
+          if elem&.key?('title') &&
+             elem['title'].match?(/^[a-záàâãéèêíïóôõöúç\s]+ - [a-z]{2}$/i)
 
             team = Team.new
 
             # Extract team's name (e.g Santos - SP => Santos)
-            team.name = elem["title"][/^[a-záàâãéèêíïóôõöúç\s]{3,50}/i].strip
+            team.name = elem['title'][/^[a-záàâãéèêíïóôõöúç\s]{3,50}/i].strip
             # Extract team's states (e.g Santos - SP => SP)
-            team.state = elem["title"][/[a-z]{2}$/i]
+            team.state = elem['title'][/[a-z]{2}$/i]
             # Extract team's avatar_url url
-            team.avatar_url = elem["src"] if elem.key?("src")
+            team.avatar_url = elem['src'] if elem.key?('src')
 
             @teams << team
           end

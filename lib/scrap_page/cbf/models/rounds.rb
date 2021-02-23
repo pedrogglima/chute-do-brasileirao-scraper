@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module ScrapPage
   class CBF
     module Models
@@ -44,11 +45,11 @@ module ScrapPage
           end
 
           def team_score
-            score.split(" ")[0].to_i if score
+            score.split(' ')[0].to_i if score
           end
 
           def opponent_score
-            score.split(" ")[2].to_i if score
+            score.split(' ')[2].to_i if score
           end
 
           def full_date
@@ -77,7 +78,7 @@ module ScrapPage
 
         # @params document [Nokogiri::XML::Document]
         def initialize(document)
-          @elem_rounds = document.css("div[data-slide-index]")
+          @elem_rounds = document.css('div[data-slide-index]')
 
           @rounds = []
           scrap_rounds
@@ -102,7 +103,7 @@ module ScrapPage
             next unless round.element?
 
             # Because index starts on Zero, we add 1 for matching with Rounds ID
-            number = round.parent["data-slide-index"].to_i + 1
+            number = round.parent['data-slide-index'].to_i + 1
 
             round.children.each do |elem|
               next unless elem.element?
@@ -140,7 +141,7 @@ module ScrapPage
             info = find_info(match)
             if info
               # (e.g Jogo: 336) - it's always set on matches
-              mat.id_match = info[/Jogo: \d{1,3}$/i].gsub(/^Jogo: /, "")
+              mat.id_match = info[/Jogo: \d{1,3}$/i].gsub(/^Jogo: /, '')
               # (e.g 03/02/2021) - maybe undefined
               mat.date = info[%r{\d{2}/\d{2}/\d{2,4}}i]
               # (e.g 16:00) - maybe undefined
@@ -166,12 +167,13 @@ module ScrapPage
 
         # teams are extract from <img>
         def scrap_adversarios(adversario)
-          if adversario.key?("title") &&
-             adversario["title"].match?(/^[a-záàâãéèêíïóôõöúç\s]+ - [a-z]{2}$/i)
+          if adversario.key?('title') &&
+             adversario['title'].match?(/^[a-záàâãéèêíïóôõöúç\s]+ - [a-z]{2}$/i)
 
             # Extract team's name (e.g Santos - SP => Santos)
-            return adversario["title"][/^[a-záàâãéèêíïóôõöúç\s]{3,50}/i].strip
+            return adversario['title'][/^[a-záàâãéèêíïóôõöúç\s]{3,50}/i].strip
           end
+
           nil
         end
 
