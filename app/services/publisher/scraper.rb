@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Publisher
   class Scraper
     def self.publish(exchange, message = {})
       x = channel.fanout("scraper.#{exchange}")
-      
+
       x.publish(message.to_json)
     end
 
@@ -12,9 +14,7 @@ module Publisher
 
     # using default settings
     def self.connection
-      @connection ||= Bunny.new({host: 'rabbitmq'}).tap do |c|
-        c.start
-      end
+      @connection ||= Bunny.new({ host: 'rabbitmq' }).tap(&:start)
     end
   end
 end
